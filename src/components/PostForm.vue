@@ -17,9 +17,7 @@
 </template>
 
 <script>
-import InputTextUI from './UI/InputTextUI.vue';
     export default {
-  components: { InputTextUI },
         data() {
             return {
                 post: {
