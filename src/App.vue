@@ -16,9 +16,10 @@
         <button @click="addDislike"><strong>{{ dislikes }}</strong></button>
     </div>
     <post-form
-        @create="createPost"/>
+        @create="createPost" />
     <post-list 
-        :posts="posts" />
+        :posts="posts"
+        @remove="removePost" />
 </div>
 </template>
 
@@ -52,6 +53,10 @@ export default {
         createPost(post, status) {
             this.posts.push(post);
             this.newPostStatus = status;
+        },
+        removePost(post){
+            this.posts = this.posts
+            .filter(p => p.id !== post.id)
         },
     },
 }

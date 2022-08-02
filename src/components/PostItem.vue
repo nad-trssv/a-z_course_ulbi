@@ -5,7 +5,11 @@
             <p>{{ post.body }}</p>
         </div>
         <div class="post_actions">
-            <btn-ui class="btn danger_bg post_actions__btn">Remove</btn-ui>
+            <btn-ui 
+                class="btn danger_bg post_actions__btn"
+                @click="$emit('remove', post)" >
+                Remove
+            </btn-ui>
             <btn-ui class="btn primary_bg post_actions__btn">Edit</btn-ui>
         </div>
     </div>
