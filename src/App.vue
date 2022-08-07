@@ -30,10 +30,12 @@
     <br /> <br />
     Search by text:
     <input-text-ui v-model.trim="searchInput" ></input-text-ui>
-
+    <br>
     <post-list 
         :posts="posts"
-        @remove="removePost" />
+        @remove="removePost"
+        v-if="!isLoadingPosts" />
+    <loading-ui v-else></loading-ui>
 
 </div>
 </template>
@@ -60,6 +62,7 @@ export default {
             modalVisible: false,
             posts: [],
             searchInput: '',
+            isLoadingPosts: false,
         }
     },
     methods: {
@@ -83,12 +86,14 @@ export default {
         },
         async fetchPosts() {
             try {
+                this.isLoadingPosts = true;
                 setTimeout( async() => {
                     const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
 
                     response.data.forEach(element => {
                         this.posts.push(element);
                     });
+                    this.isLoadingPosts = false;
                 }, 1000);
             } catch(e) {
                 alert(e);
