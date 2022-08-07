@@ -27,6 +27,10 @@
         @click="showModal"
         class="btn success_bg">Create new Post +</btn-ui>
 
+    <br /> <br />
+    Search by text:
+    <input-text-ui v-model.trim="searchInput" ></input-text-ui>
+
     <post-list 
         :posts="posts"
         @remove="removePost" />
@@ -37,12 +41,14 @@
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import DialogCreateUi from './components/UI/DialogCreateUI.vue';
+import InputTextUI from './components/UI/InputTextUI.vue';
 
 export default {
     components: {
     PostList,
     PostForm,
     DialogCreateUi,
+    InputTextUI,
 },
     data() {
         return {
@@ -55,6 +61,7 @@ export default {
                 {id:2, title: 'Vue', body: 'Vue Description'},
                 {id:3, title: 'React', body: 'React Description'}
             ],
+            searchInput: '',
         }
     },
     methods: {
