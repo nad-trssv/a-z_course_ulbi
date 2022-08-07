@@ -35,6 +35,11 @@
                     body: ''
                 }
             },
+        },
+        watch: {
+            post(newValue) {
+                //console.log(newValue);
+            }
         }
     }
 </script>

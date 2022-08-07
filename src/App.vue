@@ -112,7 +112,17 @@ export default {
     },
     mounted() {
         this.fetchPosts();
-    }
+    },
+    watch: {
+        selectSort(newValue) {
+            this.posts.sort((post1, post2) => {
+                return post1[newValue]?.localeCompare(post2[newValue])
+            })
+        },
+        modalVisible(newValue) {
+            //console.log(newValue);
+        }
+    },
 }
 
 </script>
