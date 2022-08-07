@@ -23,14 +23,19 @@
     </dialog-create-ui>
 
     <h4 class="cntr_text">List</h4>
-    <btn-ui 
-        @click="showModal"
-        class="btn success_bg">Create new Post +</btn-ui>
 
-    <br /> <br />
-    Search by text:
-    <input-text-ui v-model.trim="searchInput" ></input-text-ui>
-    <br>
+    <section class="sorting">
+        <div class="sort_btns">
+            <btn-ui 
+                @click="showModal"
+                class="btn success_bg">Create new Post +</btn-ui>
+            <sort-ui
+                v-model="selectSort"
+                :options="sortOptions" />
+
+        </div>
+    </section>
+        
     <post-list 
         :posts="posts"
         @remove="removePost"
@@ -63,6 +68,11 @@ export default {
             posts: [],
             searchInput: '',
             isLoadingPosts: false,
+            selectSort: '',
+            sortOptions: [
+                {value: 'title', name: 'By name'},
+                {value: 'body', name: 'By description'},
+            ],
         }
     },
     methods: {
@@ -130,5 +140,10 @@ section{
 }
 .txt_cntr{
     text-align: center;
+}
+.sort_btns{
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
 }
 </style>
