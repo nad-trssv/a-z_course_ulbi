@@ -34,6 +34,7 @@
     <post-list 
         :posts="posts"
         @remove="removePost" />
+
 </div>
 </template>
 
@@ -42,6 +43,7 @@ import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import DialogCreateUi from './components/UI/DialogCreateUI.vue';
 import InputTextUI from './components/UI/InputTextUI.vue';
+import axios from 'axios';
 
 export default {
     components: {
@@ -56,11 +58,7 @@ export default {
             dislikes: 0,
             newPostStatus: '',
             modalVisible: false,
-            posts: [
-                {id:1, title: 'Javascript', body: 'JS Description'},
-                {id:2, title: 'Vue', body: 'Vue Description'},
-                {id:3, title: 'React', body: 'React Description'}
-            ],
+            posts: [],
             searchInput: '',
         }
     },
@@ -82,8 +80,24 @@ export default {
         },
         showModal() {
             this.modalVisible = true
-        }
+        },
+        async fetchPosts() {
+            try {
+                setTimeout( async() => {
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+
+                    response.data.forEach(element => {
+                        this.posts.push(element);
+                    });
+                }, 1000);
+            } catch(e) {
+                alert(e);
+            }
+        },
     },
+    mounted() {
+        this.fetchPosts();
+    }
 }
 
 </script>
