@@ -9,11 +9,11 @@
 
     <div>
         likes:
-        <button @click="addLike"><strong>{{ likes }}</strong></button>
+        <btn-ui @click="addLike">{{ likes }}</btn-ui>
     </div>
     <div>
         dislikes:
-        <button @click="addDislike"><strong>{{ dislikes }}</strong></button>
+        <btn-ui @click="addDislike">{{ dislikes }}</btn-ui>
     </div>
 
     <dialog-create-ui v-model:show="modalVisible">
