@@ -22,9 +22,16 @@
         />
     </dialog-create-ui>
 
-    <h4 class="cntr_text">List</h4>
+    <h4 class="cntr_text">Posts Example 1</h4>
 
     <section class="sorting">
+
+        <input-text-ui 
+            v-model="searchQuery"  
+            placeholder="Search"  
+            class="search_fullw"
+        />
+
         <div class="sort_btns">
             <btn-ui 
                 @click="showModal"
@@ -37,10 +44,15 @@
     </section>
         
     <post-list 
-        :posts="sortedPosts"
+        :posts="sortedAndSearchedPosts"
         @remove="removePost"
         v-if="!isLoadingPosts" />
     <loading-ui v-else></loading-ui>
+
+    <pagination-ui 
+        :totalPages="totalPages"
+        :pageCurrent="page"
+        @change="changePage" />
 
 </div>
 </template>
@@ -48,16 +60,12 @@
 <script>
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
-import DialogCreateUi from './components/UI/DialogCreateUI.vue';
-import InputTextUI from './components/UI/InputTextUI.vue';
 import axios from 'axios';
 
 export default {
     components: {
     PostList,
-    PostForm,
-    DialogCreateUi,
-    InputTextUI,
+    PostForm
 },
     data() {
         return {
@@ -66,11 +74,14 @@ export default {
             newPostStatus: '',
             modalVisible: false,
             posts: [],
-            searchInput: '',
+            searchQuery: '',
             isLoadingPosts: false,
             selectSort: '',
+            page: 1,
+            limit: 3,
+            totalPages: 0,
             sortOptions: [
-                {value: 'title2', name: 'By name'},
+                {value: 'title', name: 'By name'},
                 {value: 'body', name: 'By description'},
             ],
         }
@@ -94,19 +105,28 @@ export default {
         showModal() {
             this.modalVisible = true
         },
+        changePage(pageNumber) {
+            this.page = pageNumber;
+        },
         async fetchPosts() {
             try {
                 this.isLoadingPosts = true;
                 setTimeout( async() => {
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
-
-                    response.data.forEach(element => {
-                        this.posts.push(element);
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit,
+                        }
                     });
-                    this.isLoadingPosts = false;
+
+                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+                    
+                    this.posts = response.data;
                 }, 1000);
             } catch(e) {
                 alert(e);
+            } finally {
+                this.isLoadingPosts = false;
             }
         },
     },
@@ -116,9 +136,15 @@ export default {
     computed: {
         sortedPosts() {
             return [...this.posts].sort((post1, post2) =>  post1[this.selectSort]?.localeCompare(post2[this.selectSort]))
+        },
+        sortedAndSearchedPosts() {
+            return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
         }
     },
     watch: {
+        page() {
+            this.fetchPosts();
+        }
     },
 }
 
@@ -152,5 +178,11 @@ section{
     margin: 15px 0;
     display: flex;
     justify-content: space-between;
+}
+.search_fullw {
+    width: -webkit-fill-available;
+}
+#app{
+    margin: 5px 20px;
 }
 </style>

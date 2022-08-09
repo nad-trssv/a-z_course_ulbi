@@ -1,11 +1,12 @@
 <template>
     <div class="sortby">
-        <select v-model="modelValue" @change="changeOption">
+        <select v-model="modelValue" @change="changeOption" class="select_sort">
             <option disabled value="">Choose option</option>
             <option 
                 v-for="option in options" 
                 :key="option.value" 
-                :value="option.value">{{ option.name }}</option>
+                :value="option.value"
+                class="option_sort" >{{ option.name }}</option>
         </select>
     </div>
 </template>
@@ -31,5 +32,10 @@
 </script>
 
 <style lang="css" scoped>
-
+.select_sort{
+    margin-bottom: 10px;
+    padding: 3px 10px;
+    border: 2px solid rgb(93, 115, 216);
+    border-radius: 5px;
+}
 </style>

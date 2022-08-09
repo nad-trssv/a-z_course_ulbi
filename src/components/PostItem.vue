@@ -28,16 +28,19 @@
 
 <style scoped>
 .post{
-    width: 250px;
+    width: 200px;
     margin: 10px 3px;
     padding: 0.5rem 1.5rem;
     border-radius: 5px;
     border: 2px solid rgb(185, 184, 184);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column-reverse;
+    justify-content: start;
+    background: #fff;
 }
 .post_actions{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    margin-bottom: 10px;
 }
 </style>
