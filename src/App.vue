@@ -22,37 +22,40 @@
         />
     </dialog-create-ui>
 
-    <h4 class="cntr_text">Posts Example 1</h4>
+    <div class="posts_pagination_v1">
+        <h4 class="cntr_text">Posts</h4>
 
-    <section class="sorting">
+        <section class="sorting">
 
-        <input-text-ui 
-            v-model="searchQuery"  
-            placeholder="Search"  
-            class="search_fullw"
-        />
+            <input-text-ui 
+                v-model="searchQuery"  
+                placeholder="Search"  
+                class="search_fullw"
+            />
 
-        <div class="sort_btns">
-            <btn-ui 
-                @click="showModal"
-                class="btn success_bg">Create new Post +</btn-ui>
-            <sort-ui
-                v-model="selectSort"
-                :options="sortOptions" />
+            <div class="sort_btns">
+                <btn-ui 
+                    @click="showModal"
+                    class="btn success_bg">Create new Post +</btn-ui>
+                <sort-ui
+                    v-model="selectSort"
+                    :options="sortOptions" />
 
-        </div>
-    </section>
-        
-    <post-list 
-        :posts="sortedAndSearchedPosts"
-        @remove="removePost"
-        v-if="!isLoadingPosts" />
-    <loading-ui v-else></loading-ui>
+            </div>
+        </section>
 
-    <pagination-ui 
-        :totalPages="totalPages"
-        :pageCurrent="page"
-        @change="changePage" />
+        <post-list 
+            :posts="sortedAndSearchedPosts"
+            @remove="removePost"
+            v-if="!isLoadingPosts" />
+        <loading-ui v-else></loading-ui>
+
+        <div ref="observer" class="observer"> OBSERVER </div>
+        <pagination-ui 
+            :totalPages="totalPages"
+            :pageCurrent="page"
+            @change="changePage" />
+    </div>
 
 </div>
 </template>
@@ -77,8 +80,8 @@ export default {
             searchQuery: '',
             isLoadingPosts: false,
             selectSort: '',
-            page: 1,
-            limit: 3,
+            page: 0,
+            limit: 10,
             totalPages: 0,
             sortOptions: [
                 {value: 'title', name: 'By name'},
@@ -129,9 +132,41 @@ export default {
                 this.isLoadingPosts = false;
             }
         },
+        async loadMorePosts() {
+            try {
+                this.page += 1;
+                const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                    params: {
+                        _page: this.page,
+                        _limit: this.limit
+                    }
+                });
+                this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+                
+                this.posts = [...this.posts, ...response.data];
+            } catch(e) {
+                alert(e);
+            }
+        },
     },
     mounted() {
         this.fetchPosts();
+
+        //Obserever API https://developer.mozilla.org/ru/docs/Web/API/Intersection_Observer_API
+        // this.$refs.observer - наблюдаемый объект в DOM-элементе
+        const options = {
+            rootMargin: '0px',
+            threshold: 1.0
+        }
+        const callback = (entries, observer) => {
+            // console.log('Пересечён'); - будет выполняться несколько раз,нас это неустраивает, 
+            // поэтому мы будем использовать значение isIntersecting ->
+            if(entries[0].isIntersecting) {
+                this.loadMorePosts();
+            }
+        };
+        const observer = new IntersectionObserver(callback, options);
+        observer.observe(this.$refs.observer);
     },
     computed: {
         sortedPosts() {
@@ -184,5 +219,13 @@ section{
 }
 #app{
     margin: 5px 20px;
+}
+.observer{
+    height: 30px;
+    background:blue;
+    color: #fff;
+    text-align: center;
+    height: max-content;
+    padding: 5px 0;
 }
 </style>
