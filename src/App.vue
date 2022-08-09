@@ -37,7 +37,7 @@
     </section>
         
     <post-list 
-        :posts="posts"
+        :posts="sortedPosts"
         @remove="removePost"
         v-if="!isLoadingPosts" />
     <loading-ui v-else></loading-ui>
@@ -70,7 +70,7 @@ export default {
             isLoadingPosts: false,
             selectSort: '',
             sortOptions: [
-                {value: 'title', name: 'By name'},
+                {value: 'title2', name: 'By name'},
                 {value: 'body', name: 'By description'},
             ],
         }
@@ -113,15 +113,12 @@ export default {
     mounted() {
         this.fetchPosts();
     },
-    watch: {
-        selectSort(newValue) {
-            this.posts.sort((post1, post2) => {
-                return post1[newValue]?.localeCompare(post2[newValue])
-            })
-        },
-        modalVisible(newValue) {
-            //console.log(newValue);
+    computed: {
+        sortedPosts() {
+            return [...this.posts].sort((post1, post2) =>  post1[this.selectSort]?.localeCompare(post2[this.selectSort]))
         }
+    },
+    watch: {
     },
 }
 
